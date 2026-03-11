@@ -10,6 +10,7 @@ It tries to offer the following options:
 - control processes with os.subprocess
 - to run the console version use <pre>./build.py</pre>
 - the Gtk/Glib Gui version runs with <pre>python BuildApp.py</pre> allows overriding the project main dir with --dir=PATH
+- requires gobject intergration use for windows e.g. pacman -S ${MINGW_PACKAGE_PREFIX}-python-gobject
 
 So there is no nice configuration, 
 the configuration values are build into Proj.py see:
