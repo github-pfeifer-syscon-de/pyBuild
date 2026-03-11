@@ -7,8 +7,10 @@ import sys
 import pathlib
 from  PipeThread import PipeThread
 from MsgListener import MsgListenerInterface
+from ProjConfig import ProjConfig
 
 class Proj():
+    config: ProjConfig = None
     def __init__(self, name, path, ts):
         self.name = name
         self.path = path
@@ -70,7 +72,7 @@ class Proj():
         for pack in packs:
             pack.unlink()
         # create symbolic link
-        source = os.path.join(self.getMainBuildDir(), self.name + 'PKGBUILD')
+        source = os.path.join(Proj.getMainBuildDir(), self.name + 'PKGBUILD')
         target = os.path.join(self.getBuildDir(), 'PKGBUILD')
         if not os.path.islink(target):
             os.symlink(source, target)
@@ -123,7 +125,7 @@ class Proj():
         return p.returncode
 
     def build(self,msgLsnr: MsgListenerInterface):
-        if not self.isLinux():
+        if not ProjConfig.isLinux():
             r = self.git(['pull'])
             if r :
                 r = self.check()
@@ -147,17 +149,21 @@ class Proj():
             self.captOut(['git','fetch'])
             return self.captOut(['git', 'rev-list', '--left-right', '--count', 'main...origin/main'])
         return 'Not a git dir'
+    @staticmethod
+    def getConfig():
+        if Proj.config is None:
+            Proj.config = ProjConfig()
+        return Proj.config
 
-    # used as store PKGBUILD templates
+    # used as store for PKGBUILD templates
     #   with project name as prefix e.g. fractPKGBUILD
     @staticmethod
-    def getMainBuildDir() -> str:
-        home = pathlib.Path.home()
-        return os.path.join(home , 'csrc.git')
-    def isLinux(self) -> bool:
-        return sys.platform == "linux"
+    def getMainBuildDir():
+        return Proj.getConfig().getMainBuildDir()
+
+
     def defTarget(self) -> str:
-        return "/usr" if self.isLinux() else "/ucrt64"
+        return Proj.getConfig().getDefaultTarget()
     # check for path if it is a package file for archlinux/pacman
     def isPackage(self,p) -> bool:
         return p.is_file() and p.name.endswith('.zst')
@@ -171,6 +177,7 @@ class Proj():
         return list
     # get local pacman repo dir
     def getPacmanRepo(self) -> str:
-        return '/var/local/pacman'
+        return Proj.getConfig().getPacmanRepo()
+
     def getPacmanRepoDb(self) -> str:
-        return os.path.join(self.getPacmanRepo(), 'custom.db.tar.gz')
+        return os.path.join(self.getPacmanRepo(), Proj.getConfig().getCustomRepoName())

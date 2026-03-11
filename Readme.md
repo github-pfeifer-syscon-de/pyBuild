@@ -10,14 +10,18 @@ It tries to offer the following options:
 - control processes with os.subprocess
 - to run the console version use <pre>./build.py</pre>
 - the Gtk/Glib Gui version runs with <pre>python BuildApp.py</pre> allows overriding the project main dir with --dir=PATH
-- requires gobject intergration use for windows e.g. pacman -S ${MINGW_PACKAGE_PREFIX}-python-gobject
+- requires gobject integration use for windows e.g. pacman -S ${MINGW_PACKAGE_PREFIX}-python-gobject
+- in case git is setup with ssh, the environment is prepared to use the AskPass.py as a GUI password helper (also used for sudo on installation)
 
-So there is no nice configuration, 
-the configuration values are build into Proj.py see:
+On startup the setup options are saved into ~/.config/pyBuild.conf so they can be adjusted
+for the next startup.
+The default configuration values are build into ProjConfig.py.
+Some explanation of the values:
 
-- getMainBuildDir,  is the directory which contains subdirectory for each project, and the PKGBUILD templates for each project prefixed with the project name see genericImg for a example 
+- BuildDir,  is the directory which contains subdirectory for each project, and the PKGBUILD templates for each project prefixed with the project name see genericImg for a example 
+- RepoDir, the location of a custom pacman repo directory
+- RepoDir, the repository db file name
+- DefaultTarget is the install prefix for linux it is <pre>/usr</pre> for windows <pre>/ucrt64</pre> 
+
+See ProjConfig.py method for further config: 
 - isLinux, switches between two build types: for linux use pacman and a local repository, otherwise install with meson
-- getPacmanRepo, the location of a custom pacman repo
-- getPacmanRepoDb, the repository db file
-- defTarget is the install prefix for linux it is <pre>/usr</pre> for windows <pre>/ucrt64</pre> 
-- in case git is setup with ssh, the environment is prepared to use the AskPass.py as a GUI password helper (also used for sudo on installation)  
