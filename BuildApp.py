@@ -4,6 +4,7 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import GLib, Gio, Gtk
 from BuildWin import BuildWin
+from Proj import Proj
 
 class BuildApp(Gtk.Application):
     def __init__(self, *args, **kwargs):
@@ -14,15 +15,16 @@ class BuildApp(Gtk.Application):
             **kwargs
         )
         self.window = None
+        self.dir = Proj.getMainBuildDir()
 
-        self.add_main_option(
-            "test",
-            ord("t"),
-            GLib.OptionFlags.NONE,
-            GLib.OptionArg.NONE,
-            "Command line test",
-            None,
-        )
+        optEntry = GLib.OptionEntry()
+        optEntry.arg=GLib.OptionArg.STRING
+        optEntry.description="The projects main dir"
+        #optEntry.arg_data= 'type' #self.type_callback
+        #optEntry.flags=GLib.OptionFlags.OPTIONAL_ARG   # works without, but this may go with arg_data to use a parse function
+        optEntry.long_name="dir"
+        optEntry.short_name = ord("d")
+        self.add_main_option_entries([optEntry])
 
     def do_startup(self):
         Gtk.Application.do_startup(self)
@@ -43,7 +45,7 @@ class BuildApp(Gtk.Application):
         if not self.window:
             # Windows are associated with the application
             # when the last one is closed the application shuts down
-            self.window = BuildWin(application=self, title="Main Window")
+            self.window = BuildWin(dir=self.dir,application=self, title="Build window")
             #builder = Gtk.Builder()
             #builder.add_from_file("BuildWin.ui")
             #self.window = builder.get_object("buildWin")
@@ -57,9 +59,10 @@ class BuildApp(Gtk.Application):
         # convert GVariantDict -> GVariant -> dict
         options = options.end().unpack()
 
-        if "test" in options:
+        if "dir" in options:
             # This is printed on the main instance
-            print("Test argument recieved: %s" % options["test"])
+            #print("Dir argument : %s" % options["dir"])
+            self.dir = options["dir"]
 
         self.activate()
         return 0

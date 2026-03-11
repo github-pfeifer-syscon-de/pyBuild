@@ -29,9 +29,10 @@ class BuildWin(Gtk.ApplicationWindow):
     text = Gtk.Template.Child()
     build = Gtk.Template.Child()
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self,dir: str, *args, **kwargs):
        super().__init__(*args, **kwargs)
        self.runner = None
+       self.dir = dir
        model = self.list()
        sorted_model = Gtk.TreeModelSort(model=model)
        sorted_model.set_sort_column_id(self.COLUMN_INDEX_TIME, Gtk.SortType.ASCENDING)   # s used iso date to be sortable as text
@@ -64,7 +65,7 @@ class BuildWin(Gtk.ApplicationWindow):
         # sort will be handled with table
         #lstProj: list[Proj]=[]
         store = Gtk.ListStore(str, str, object)
-        with os.scandir(Proj.getMainBuildDir()) as d:
+        with os.scandir(self.dir) as d:
             for e in d:
                 if e.is_dir() and not e.name.startswith('.'):
                     ctime = os.path.getctime(e)
