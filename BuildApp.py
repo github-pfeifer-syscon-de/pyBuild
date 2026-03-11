@@ -35,8 +35,8 @@ class BuildApp(Gtk.Application):
         action.connect("activate", self.on_quit)
         self.add_action(action)
 
-        builder = Gtk.Builder.new_from_file('menu.xml')
-        self.set_app_menu(builder.get_object("app-menu"))
+        #builder = Gtk.Builder.new_from_file('menu.xml')
+        #self.set_app_menu(builder.get_object("app-menu"))
 
     def do_activate(self):
         # We only allow a single window and raise any existing ones
