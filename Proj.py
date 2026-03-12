@@ -7,7 +7,7 @@ import sys
 import pathlib
 from  PipeThread import PipeThread
 from MsgListener import MsgListenerInterface
-from ProjConfig import ProjConfig
+from ProjConfig import ProjConfig,MainSection,ConfKey
 
 class Proj():
     config: ProjConfig = None
@@ -150,7 +150,7 @@ class Proj():
             return self.captOut(['git', 'rev-list', '--left-right', '--count', 'main...origin/main'])
         return 'Not a git dir'
     @staticmethod
-    def getConfig():
+    def getConfig() -> ProjConfig:
         if Proj.config is None:
             Proj.config = ProjConfig()
         return Proj.config
@@ -159,11 +159,9 @@ class Proj():
     #   with project name as prefix e.g. fractPKGBUILD
     @staticmethod
     def getMainBuildDir():
-        return Proj.getConfig().getMainBuildDir()
-
-
+        return Proj.getConfig().Main.BuildDir.value
     def defTarget(self) -> str:
-        return Proj.getConfig().getDefaultTarget()
+        return Proj.getConfig().Main.DefaultTarget.value
     # check for path if it is a package file for archlinux/pacman
     def isPackage(self,p) -> bool:
         return p.is_file() and p.name.endswith('.zst')
@@ -177,7 +175,8 @@ class Proj():
         return list
     # get local pacman repo dir
     def getPacmanRepo(self) -> str:
-        return Proj.getConfig().getPacmanRepo()
+        path = pathlib.Path(Proj.getConfig().Main.Repo.value)
+        return str(path.parent)
 
     def getPacmanRepoDb(self) -> str:
-        return os.path.join(self.getPacmanRepo(), Proj.getConfig().getCustomRepoName())
+        return Proj.getConfig().Main.Repo.value
