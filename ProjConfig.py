@@ -102,10 +102,10 @@ class ProjConfig:
         if type(value) is str:
             self.config.set_string(sectionName, key, str(value))
         print(f'Setting value for sect {sectionName} key {key} type {type(value)} is not supported!')
-    def getValue(self, sectionName: str, key: str, type: type):
-        if type is int:
+    def getValue(self, sectionName: str, key: str, valType: type):
+        if valType is int:
             return self.config.get_integer(sectionName, key)
-        if type is str:
-            return self.config.get_string(sectionName, str(key))
-        print(f'Getting value for sect {sectionName} key {key} type {type} is not supported!')
+        if valType is str:
+            return self.config.get_string(sectionName, key)
+        print(f'Getting value for sect {sectionName} key {key} type {valType} is not supported!')
         return None

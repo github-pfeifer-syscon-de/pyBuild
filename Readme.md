@@ -11,8 +11,10 @@ It tries to offer the following options:
 - the Gtk/Glib Gui version runs with <pre>python BuildApp.py</pre> allows overriding the project main dir with --dir=PATH 
 - in case git is setup with ssh, the environment is prepared to use the AskPass.py as a GUI password helper (also used for sudo on installation with pacman)
 
-On startup the setup options are saved into ~/.config/pyBuild.conf so they can be adjusted
-for the next startup.
+## Config
+
+On startup the setup options are saved into <pre>~/.config/pyBuild.conf</pre>
+so they can be adjusted for the next startup.
 The default configuration values are build into ProjConfig.py.
 Some explanation of the values:
 
@@ -20,10 +22,34 @@ Some explanation of the values:
 - Repo, the location of a custom pacman repo directory including the db file ending with .db.tar.gz (only used on linux)
 - DefaultTarget is the install prefix for linux it is <pre>/usr</pre> for windows <pre>/ucrt64</pre> 
 
+## Python virtual env
+
+Is the answer to "i can't find the package in my system"
+or "i don't want to install too many system packages".
+To create use in project dir:
+<pre>
+python -m venv .venv
+</pre>
+To activate (with a shell):
+<pre>
+source .venv/bin/activate
+</pre>
+Any python calls now use the local environment so
+pip installs will be local:
+<pre>
+pip install PyGObject
+pip install typing_extensions 
+</pre>
+To check what is installed / compare with system:
+<pre>
+pip list
+</pre>
+For more infos see https://python.land/virtual-environments/virtualenv
+
 ## Linux
 
-- requires gobject integreation e.g. <pre>pacman -S python-gobject</pre>
-- for installation of the packages uses pacman and a local repository (this is much effort see Arch-Linux wiki on creating a custom repository)
+- requires gobject integration e.g. <pre>pacman -S python-gobject</pre>
+- for installation of the packages it uses pacman and a local repository (this is much effort see Arch-Linux wiki on creating a custom repository)
 - depending on the situation meson install might be an option (with known limitations)
 - or the use of the created packages with pacman -U pack_file ...
 
